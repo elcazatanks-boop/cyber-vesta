@@ -1,15 +1,21 @@
 import streamlit as st
 
+# Configuración de la página
 st.set_page_config(
     page_title="Cyber-Vesta: Control Inteligente",
     page_icon="🧥",
     layout="centered",
 )
 
+# Título y descripción
 st.title("🧥 Cyber-Vesta: Casaca Inteligente")
 st.write(
     "Proyecto de EPT: Sistema de termorregulación y seguridad automatizada."
 )
+
+# --- Panel de Control ---
+st.markdown("---")
+st.subheader("Panel de Control del Estudiante")
 
 # Botón de encendido principal
 estado_energia = st.toggle(
@@ -20,13 +26,12 @@ if not estado_energia:
     st.warning(
         "⚠️ El sistema está **APAGADO**. Enciéndelo para activar la simulación."
     )
-    # Casaca escolar genérica apagada (azul/blanco/rojo)
-    st.image(
-        "https://i.ibb.co/3TqGjK9/casaca-escolar-base.png",
-        caption="Sistema Inactivo",
-        width=350,
-    )
-    st.metric(label="Estado del Sistema", value="Inactivo 🔴")
+    # Visualización de sistema apagado
+    st.markdown("---")
+    st.markdown("<h1 style='text-align: center; font-size: 100px;'>❌</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: red;'>Sistema Inactivo</h3>", unsafe_allow_html=True)
+    st.markdown("---")
+    st.metric(label="Estado", value="Inactivo 🔴")
 else:
     st.success("🟢 Sistema **ENCENDIDO** y operando en tiempo real.")
 
@@ -35,56 +40,42 @@ else:
         "Simular Temperatura Corporal (°C)", 30.0, 40.0, 36.5
     )
 
-    # --- Lógica de Visualización de la Casaca (Diseño Escolar) ---
-    col_img, col_info = st.columns([1, 1])
+    # --- Lógica de Visualización (Usando Emojis en vez de Imágenes) ---
+    st.markdown("---")
 
-    with col_img:
+    col1, col2 = st.columns([2, 1])
+
+    with col1:
+        # Mostrar el estado visual grande
         if temp_cuerpo < 35.5:
-            # Casaca con efecto de calefacción
-            st.image(
-                "https://i.ibb.co/3F03dC5/casaca-escolar-calefaccion.gif",
-                caption="❄️ CALEFACCIÓN ACTIVADA 🔥",
-                width=350,
-            )
+            st.markdown("<h1 style='text-align: center; font-size: 150px;'>❄️🔥🔥</h1>", unsafe_allow_html=True)
+            st.markdown("<h2 style='text-align: center; color: blue;'>CALEFACCIÓN ACTIVADA</h2>", unsafe_allow_html=True)
+            st.error("El sistema detectó frío extremo y está elevando la temperatura interna.")
         elif temp_cuerpo > 38.0:
-            # Casaca con efecto de ventilación
-            st.image(
-                "https://i.ibb.co/WkXvj1J/casaca-escolar-ventilacion.gif",
-                caption="🔥 VENTILADORES ACTIVADOS 🌀",
-                width=350,
-            )
+            st.markdown("<h1 style='text-align: center; font-size: 150px;'>🔥🔥🌀🌀</h1>", unsafe_allow_html=True)
+            st.markdown("<h2 style='text-align: center; color: orange;'>VENTILADORES ACTIVADOS</h2>", unsafe_allow_html=True)
+            st.warning("El sistema detectó calor excesivo y activó la ventilación para enfriar.")
         else:
-            # Casaca base (estable)
-            st.image(
-                "https://i.ibb.co/3TqGjK9/casaca-escolar-base.png",
-                caption="✅ Temperatura Estable",
-                width=350,
-            )
+            st.markdown("<h1 style='text-align: center; font-size: 150px;'>✅🌡️</h1>", unsafe_allow_html=True)
+            st.markdown("<h2 style='text-align: center; color: green;'>TEMPERATURA ESTABLE</h2>", unsafe_allow_html=True)
+            st.success("El estudiante se encuentra en su zona de confort. Sistemas en reposo.")
 
-    with col_info:
-        if temp_cuerpo < 35.5:
-            st.error(
-                "❄️ **Frío extremo detectado**\n\nLa calefacción interna se ha"
-                " activado para proteger al estudiante. El sistema inteligente"
-                " regula la temperatura a 22°C internos."
-            )
-        elif temp_cuerpo > 38.0:
-            st.warning(
-                "🔥 **Calor excesivo detectado**\n\nLos micro-ventiladores se han"
-                " activado para disipar el calor y reducir la humedad."
-            )
-        else:
-            st.success(
-                "✅ **Temperatura óptima**\n\nEl sistema monitorea los"
-                " biosensores y mantiene el confort, ahorrando energía."
-            )
-
-        st.metric(label="Nivel de Batería (Power Bank)", value="83%")
+    with col2:
+        # Mostrar datos de telemetría
+        st.metric(label="Nivel de Batería", value="83%")
+        st.metric(
+            label="Modo Actual",
+            value=(
+                "Calefacción"
+                if temp_cuerpo < 35.5
+                else ("Ventilación" if temp_cuerpo > 38.0 else "Estable")
+            ),
+        )
 
     st.markdown("---")
     st.info(
         "💡 **Nota de Exposición:** Esta interfaz web simula el control"
         " electrónico de la casaca. Al mover el deslizador en tu celular, la"
-        " visualización se actualiza instantáneamente para demostrar la"
-        " lógica de respuesta de los actuadores."
+        " visualización responde instantáneamente para demostrar la lógica del"
+        " prototipo."
     )
