@@ -8,18 +8,23 @@ st.set_page_config(
 
 st.title("🧥 Cyber-Vesta: Casaca Inteligente")
 st.write(
-    "Proyecto de EPT: Sistema de termorregulación automatizada y monitoreo de energía."
+    "Proyecto de EPT: Sistema de termorregulación y seguridad automatizada."
 )
 
-# Botón de encendido principal de la casaca
+# Botón de encendido principal
 estado_energia = st.toggle(
     "🔌 Encender / Apagar Sistema de la Casaca", value=True
 )
 
 if not estado_energia:
     st.warning(
-        "⚠️ El sistema está **APAGADO**. Enciéndelo para activar el control"
-        " térmico y los ventiladores."
+        "⚠️ El sistema está **APAGADO**. Enciéndelo para activar la simulación."
+    )
+    # Casaca escolar genérica apagada (azul/blanco/rojo)
+    st.image(
+        "https://i.ibb.co/3TqGjK9/casaca-escolar-base.png",
+        caption="Sistema Inactivo",
+        width=350,
     )
     st.metric(label="Estado del Sistema", value="Inactivo 🔴")
 else:
@@ -30,39 +35,56 @@ else:
         "Simular Temperatura Corporal (°C)", 30.0, 40.0, 36.5
     )
 
-    col1, col2 = st.columns(2)
+    # --- Lógica de Visualización de la Casaca (Diseño Escolar) ---
+    col_img, col_info = st.columns([1, 1])
 
-    with col1:
+    with col_img:
+        if temp_cuerpo < 35.5:
+            # Casaca con efecto de calefacción
+            st.image(
+                "https://i.ibb.co/3F03dC5/casaca-escolar-calefaccion.gif",
+                caption="❄️ CALEFACCIÓN ACTIVADA 🔥",
+                width=350,
+            )
+        elif temp_cuerpo > 38.0:
+            # Casaca con efecto de ventilación
+            st.image(
+                "https://i.ibb.co/WkXvj1J/casaca-escolar-ventilacion.gif",
+                caption="🔥 VENTILADORES ACTIVADOS 🌀",
+                width=350,
+            )
+        else:
+            # Casaca base (estable)
+            st.image(
+                "https://i.ibb.co/3TqGjK9/casaca-escolar-base.png",
+                caption="✅ Temperatura Estable",
+                width=350,
+            )
+
+    with col_info:
         if temp_cuerpo < 35.5:
             st.error(
-                "❄️ **Frío extremo detectado**\n\nCalefacción interna:"
-                " **ENCENDIDA** 🔥"
+                "❄️ **Frío extremo detectado**\n\nLa calefacción interna se ha"
+                " activado para proteger al estudiante. El sistema inteligente"
+                " regula la temperatura a 22°C internos."
             )
         elif temp_cuerpo > 38.0:
             st.warning(
-                "🔥 **Calor excesivo detectado**\n\nMicro-ventiladores:"
-                " **GIRANDO A MÁXIMA VELOCIDAD** 🌀"
+                "🔥 **Calor excesivo detectado**\n\nLos micro-ventiladores se han"
+                " activado para disipar el calor y reducir la humedad."
             )
         else:
             st.success(
-                "✅ **Temperatura óptima**\n\nSistemas en reposo (Ahorro de"
-                " energía)."
+                "✅ **Temperatura óptima**\n\nEl sistema monitorea los"
+                " biosensores y mantiene el confort, ahorrando energía."
             )
 
-    with col2:
-        st.metric(label="Nivel de Batería (Power Bank)", value="84%")
-        st.metric(
-            label="Modo Actual",
-            value=(
-                "Calefacción"
-                if temp_cuerpo < 35.5
-                else ("Ventilación" if temp_cuerpo > 38.0 else "Estable")
-            ),
-        )
+        st.metric(label="Nivel de Batería (Power Bank)", value="83%")
 
     st.markdown("---")
     st.info(
-        "💡 **Nota de exposición:** Este prototipo web reemplaza el circuito"
-        " físico para demostrar la lógica de sensores y actuadores de forma"
-        " interactiva desde cualquier smartphone."
+        "💡 **Nota de Exposición:** Esta interfaz web simula el control"
+        " electrónico de la casaca. Al mover el deslizador en tu celular, la"
+        " visualización se actualiza instantáneamente para demostrar la"
+        " lógica de respuesta de los actuadores."
     )
