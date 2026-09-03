@@ -7,15 +7,15 @@ st.set_page_config(
     layout="centered",
 )
 
+# Control de temperatura por defecto para evaluar el fondo
+# (Evaluamos el slider antes para aplicar el color de fondo general)
+temp_cuerpo = 36.5
+
 # Título y descripción
 st.title("🧥 Cyber-Vesta: Casaca Inteligente")
 st.write(
     "Proyecto de EPT: Sistema de termorregulación y seguridad automatizada."
 )
-
-# --- Panel de Control ---
-st.markdown("---")
-st.subheader("Panel de Control del Estudiante")
 
 # Botón de encendido principal
 estado_energia = st.toggle(
@@ -44,54 +44,53 @@ else:
         "Simular Temperatura Corporal (°C)", 30.0, 40.0, 36.5
     )
 
-    # --- Lógica de Batería Dinámica y Fondos por Estado ---
+    # Definir colores de fondo según la temperatura
+    if temp_cuerpo < 35.5:
+        bg_color = "#1a365d"  # Azul frío
+        modo_texto = "❄️ MODO CALEFACCIÓN ACTIVO"
+        bateria_actual = "74% (Consumo Alto 🔥)"
+        desc_estado = (
+            "El sensor detectó frío extremo. Las resistencias térmicas están"
+            " elevando la temperatura interna."
+        )
+    elif temp_cuerpo > 38.0:
+        bg_color = "#742a2a"  # Rojo calor
+        modo_texto = "🔥 MODO VENTILACIÓN ACTIVO"
+        bateria_actual = "78% (Consumo Moderado 🌀)"
+        desc_estado = (
+            "El sensor detectó calor excesivo. Los micro-ventiladores expulsan"
+            " el aire caliente."
+        )
+    else:
+        bg_color = "#1c4532"  # Verde estable
+        modo_texto = "✅ ESTADO ESTABLE (CONFORT)"
+        bateria_actual = "85% (Ahorro de Energía 🔋)"
+        desc_estado = (
+            "El estudiante está en temperatura ideal. Los sistemas entran en"
+            " reposo."
+        )
+
+    # Inyectar CSS dinámico para cambiar el fondo de la app completa
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-color: {bg_color};
+            color: white;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
     st.markdown("---")
+    st.subheader(modo_texto)
+    st.write(desc_estado)
 
-    col1, col2 = st.columns([2, 1])
-
+    col1, col2 = st.columns(2)
     with col1:
-        if temp_cuerpo < 35.5:
-            # Fondo e indicador de Frío / Calefacción
-            st.markdown(
-                """
-                <div style='background-color: #1a365d; padding: 20px; border-radius: 10px; text-align: center;'>
-                    <h1 style='font-size: 100px; margin: 0;'>❄️ 🔥</h1>
-                    <h2 style='color: #63b3ed; margin: 10px 0;'>MODO CALEFACCIÓN ACTIVO</h2>
-                    <p style='color: #e2e8f0;'>El sensor detectó frío extremo. Las resistencias térmicas están elevando la temperatura interna.</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            bateria_actual = "74% (Consumo Alto 🔥)"
-        elif temp_cuerpo > 38.0:
-            # Fondo e indicador de Calor / Ventilación
-            st.markdown(
-                """
-                <div style='background-color: #742a2a; padding: 20px; border-radius: 10px; text-align: center;'>
-                    <h1 style='font-size: 100px; margin: 0;'>🔥 🌀</h1>
-                    <h2 style='color: #fc8181; margin: 10px 0;'>MODO VENTILACIÓN ACTIVO</h2>
-                    <p style='color: #e2e8f0;'>El sensor detectó calor excesivo. Los micro-ventiladores expulsan el aire caliente.</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            bateria_actual = "78% (Consumo Moderado 🌀)"
-        else:
-            # Fondo e indicador Estable / Reposo
-            st.markdown(
-                """
-                <div style='background-color: #22543d; padding: 20px; border-radius: 10px; text-align: center;'>
-                    <h1 style='font-size: 100px; margin: 0;'>✅ 🌡️</h1>
-                    <h2 style='color: #68d391; margin: 10px 0;'>ESTADO ESTABLE (CONFORT)</h2>
-                    <p style='color: #e2e8f0;'>El estudiante está en temperatura ideal. Los sistemas entran en reposo (Ahorro).</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            bateria_actual = "85% (Ahorro de Energía 🔋)"
-
-    with col2:
         st.metric(label="Nivel de Batería", value=bateria_actual)
+    with col2:
         st.metric(
             label="Modo Actual",
             value=(
@@ -103,7 +102,6 @@ else:
 
     st.markdown("---")
     st.info(
-        "💡 **Nota de Exposición:** La batería desciende según el esfuerzo del"
-        " sistema y los paneles cambian de color automáticamente para reflejar"
-        " la respuesta térmica en tiempo real."
+        "💡 **Nota de Exposición:** El fondo de toda la interfaz cambia de color"
+        " automáticamente según la climatización y el esfuerzo del sistema."
     )
